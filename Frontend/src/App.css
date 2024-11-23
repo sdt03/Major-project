@@ -1,0 +1,128 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #1d1316;
+  color: #333;
+}
+
+.App-header {
+  background-color: #4caf50;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+.query-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px;
+}
+
+.query-box {
+  background-color: #938f90;
+  border: 1px solid #1d1316;
+  border-radius: 10px;
+  padding: 20px;
+  width: 200px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.query-box:hover {
+  transform: translateY(-5px);
+  background-color: #1d1316;
+}
+
+.chat-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.chat-window {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 800px;
+  height: 300px;
+  overflow-y: auto;
+  border-radius: 10px;
+  background: #1d1316;
+  padding: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chat-message {
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 10px;
+  color: rgb(194, 193, 193);
+}
+
+.user-message {
+  background-color: #949494;
+  color: white;
+  align-self: flex-end;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.system-message {
+  background-color: #949494;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.input-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.textarea-container {
+  position: relative;
+  width: 100%;
+}
+
+textarea {
+  width: 100%;
+  height: 80px;
+  padding: 10px 60px 10px 10px; 
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  resize: none;
+  outline: none;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.send-button {
+  position: absolute;
+  right: 10px; /* Position inside the textarea */
+  bottom: 5px; /* Align with the bottom padding of the textarea */
+  background-color: gray;
+  border: none;
+  color: #1d1316;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.send-button:hover,
+.mic-button:hover {
+  background-color: black;
+  transition: 0.2s;
+}
