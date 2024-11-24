@@ -4,6 +4,7 @@ import numpy as np
 import threading
 import webrtcvad
 from IPython.display import display, clear_output
+import time
 
 # Load the Whisper model
 model = whisper.load_model("base")
@@ -40,12 +41,12 @@ def callback(indata, frames, time, status):
         silence_counter += 1
     if silence_counter > silence_threshold and len(audio_buffer) > 0:
         clear_output(wait=True)
-        print("Transcribing...")
+        
         audio_input = np.concatenate(audio_buffer).astype(np.float32) / 32768.0
         result = model.transcribe(audio_input, language='en', fp16=False)
         transcript_text = result["text"]
         transcriptions.append(transcript_text)
-        display("Transcription: " + transcript_text)
+        display(transcript_text)
         audio_buffer.clear()
         silence_counter = 0
 
@@ -56,7 +57,7 @@ def listen_for_enter_key():
     stop_flag = True
 
 def start_transcription():
-    """Start the transcription process and return the final transcription text."""
+    """Start the transcription process and stream live results."""
     global stop_flag, transcriptions
     stop_flag = False
     transcriptions.clear()
@@ -65,19 +66,12 @@ def start_transcription():
     stream = sd.InputStream(callback=callback, channels=1, samplerate=RATE, blocksize=CHUNK)
     stream.start()
 
-    # Start a separate thread to listen for Enter key
-    transcription_thread = threading.Thread(target=listen_for_enter_key)
-    transcription_thread.start()
-
-    # Wait for the transcription thread to finish
-    transcription_thread.join()
-
-    # Stop and close the audio stream
-    stream.stop()
-    stream.close()
-
-    # Combine all transcriptions into a complete transcript
-    complete_transcript = " ".join(transcriptions)
-    print("\nComplete Transcript:\n", complete_transcript)
-    
-    return complete_transcript
+    try:
+        while not stop_flag:
+            if transcriptions:
+                yield transcriptions.pop(0)
+            time.sleep(0.1)
+    finally:
+        stream.stop()
+        stream.close()
+        yield "Transcription complete."
