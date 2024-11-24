@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import Message from "./Message";
 
-const ChatBox = ({ chatMessages, onSendQuery }) => {
-  const [userInput, setUserInput] = useState("");
+const ChatBox = ({ 
+  chatMessages, 
+  onSendQuery, 
+  onStartMic, 
+  onStopMic, 
+  isListening, 
+  userInput, 
+  setUserInput, }) => {
 
   const handleSend = () => {
     if (userInput.trim()) {
@@ -30,6 +36,13 @@ const ChatBox = ({ chatMessages, onSendQuery }) => {
           placeholder="Type your message..."
         />
         <button onClick={handleSend} className="send-button">Send</button>
+        <button
+            onClick={isListening ? onStopMic : onStartMic}
+            className={`mic-btn ${isListening ? "active" : ""}`} // Optional: Add active state styles
+          >
+            {isListening ? "Stop" : "Mic"}
+          </button>
+        
         </div>
       </div>
     </div>
