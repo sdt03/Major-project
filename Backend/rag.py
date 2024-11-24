@@ -84,12 +84,14 @@
 import os
 from dotenv import load_dotenv
 import chromadb
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from sentence_transformers import SentenceTransformer
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
+import time
+from threading import Thread
 from stt import start_transcription
 
 # Step 1: Load environment variables
@@ -190,6 +192,29 @@ def ask():
         app.logger.error(f"Error processing the question: {e}")
         return jsonify({"error": str(e)}), 500
 
+is_transcribing = False
+
+@app.route("/transcribe", methods=["GET"])
+def transcribe_audio():
+    """Stream live transcription updates."""
+    global is_transcribing
+    is_transcribing = True
+
+    def generate_transcription():
+        for transcription in start_transcription():
+            if not is_transcribing:
+                break
+            yield transcription + "\n"
+            time.sleep(0.1)
+
+    return Response(generate_transcription(), mimetype="text/plain")
+
+@app.route("/stop_transcription", methods=["POST"])
+def stop_transcription():
+    """Stop the transcription process."""
+    global is_transcribing
+    is_transcribing = False  # Set the flag to stop transcription
+    return jsonify({"message": "Transcription stopped."}), 200
 
 
 if __name__ == "__main__":
